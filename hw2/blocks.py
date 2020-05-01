@@ -75,7 +75,7 @@ class Linear(Block):
 
         # TODO: Create the weight matrix (w) and bias vector (b).
         # ====== YOUR CODE: ======
-        self.w = torch.rand((out_features, in_features))
+        self.w = torch.rand((out_features, in_features))  # TODO: check std
         self.b = torch.rand((out_features,))
         # ========================
 
@@ -100,7 +100,7 @@ class Linear(Block):
 
         # TODO: Compute the affine transform
         # ====== YOUR CODE: ======
-        out = x.mm(self.w.t())+self.b
+        out = x.mm(self.w.t()) + self.b
         # ========================
 
         self.grad_cache['x'] = x
@@ -124,8 +124,8 @@ class Linear(Block):
         dLdz = dout
         dzdb = torch.eye(dLdz.shape[0])
         dx = dLdz.mm(dzdx)
-        self.dw += dLdz.t().mm(dzdw) #TODO: understand why t() is needed
-        self.db += dLdz.t().mm(torch.ones(dLdz.shape[0],1)).view(dLdz.shape[1])
+        self.dw += (dzdw.t().mm(dLdz)).t() #= dLdz.t().mm(dzdw)  # TODO: understand why t() is needed
+        self.db += dLdz.t().mm(torch.ones(dLdz.shape[0], 1)).view(dLdz.shape[1])
         # ========================
         return dx
 
@@ -151,7 +151,7 @@ class ReLU(Block):
 
         # TODO: Implement the ReLU operation.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        out = (x > 0) * x
         # ========================
 
         self.grad_cache['x'] = x
@@ -166,7 +166,8 @@ class ReLU(Block):
 
         # TODO: Implement gradient w.r.t. the input x
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        dzdx = 1.0*(x > 0)
+        dx = dout*(dzdx)
         # ========================
 
         return dx
@@ -198,7 +199,8 @@ class Sigmoid(Block):
         #  Save whatever you need into
         #  grad_cache.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        out = (1+torch.exp(-x))**(-1)
+        self.grad_cache['out'] = out
         # ========================
 
         return out
@@ -211,7 +213,8 @@ class Sigmoid(Block):
 
         # TODO: Implement gradient w.r.t. the input x
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        out = self.grad_cache['out']
+        dx = dout*out*(1-out)
         # ========================
 
         return dx
