@@ -422,7 +422,10 @@ class MLP(Block):
 
         # TODO: Build the MLP architecture as described.
         # ====== YOUR CODE: ======
-        hidden_features.append(num_classes)
+        if type(hidden_features) == tuple:
+            hidden_features = hidden_features + (num_classes,)
+        else:
+            hidden_features.append(num_classes)
         blocks.append(Linear(in_features, hidden_features[0]))
         curr_in = hidden_features[0]
         for i in range(1, len(hidden_features)):
