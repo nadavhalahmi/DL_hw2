@@ -75,8 +75,8 @@ class Linear(Block):
 
         # TODO: Create the weight matrix (w) and bias vector (b).
         # ====== YOUR CODE: ======
-        self.w = torch.rand((out_features, in_features))  # TODO: check std
-        self.b = torch.rand((out_features,))
+        self.w = torch.rand((out_features, in_features)) * wstd  # TODO: check std
+        self.b = torch.rand((out_features,)) * wstd
         # ========================
 
         self.dw = torch.zeros_like(self.w)
