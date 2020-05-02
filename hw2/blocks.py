@@ -258,7 +258,8 @@ class CrossEntropyLoss(Block):
         #  Tip: to get a different column from each row of a matrix tensor m,
         #  you can index it with m[range(num_rows), list_of_cols].
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        loss = -x[range(N),y] + torch.log(torch.exp(x).sum(dim=1))
+        loss = loss.mean()
         # ========================
 
         self.grad_cache['x'] = x
@@ -277,7 +278,12 @@ class CrossEntropyLoss(Block):
 
         # TODO: Calculate the gradient w.r.t. the input x
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        e_x = torch.exp(x)
+        dx = (e_x.sum(dim=1)**(-1)).view(-1,1)*e_x
+        labels = torch.zeros_like(x)
+        labels[range(N), y] = 1
+        dx = dx - labels
+        dx = dout * dx / N
         # ========================
 
         return dx
@@ -336,7 +342,10 @@ class Sequential(Block):
         # TODO: Implement the forward pass by passing each block's output
         #  as the input of the next.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        curr_in = x
+        for i in range(len(self.blocks)):
+            curr_in = self.blocks[i].forward(curr_in, **kw)
+        out = curr_in
         # ========================
 
         return out
@@ -348,7 +357,10 @@ class Sequential(Block):
         #  Each block's input gradient should be the previous block's output
         #  gradient. Behold the backpropagation algorithm in action!
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        curr_out = dout
+        for i in range(len(self.blocks)-1, -1, -1):
+            curr_out = self.blocks[i].backward(curr_out)
+        din = curr_out
         # ========================
 
         return din
@@ -358,7 +370,8 @@ class Sequential(Block):
 
         # TODO: Return the parameter tuples from all blocks.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        for b in self.blocks:
+            params += b.params()
         # ========================
 
         return params
@@ -409,7 +422,16 @@ class MLP(Block):
 
         # TODO: Build the MLP architecture as described.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        hidden_features.append(num_classes)
+        blocks.append(Linear(in_features, hidden_features[0]))
+        curr_in = hidden_features[0]
+        for i in range(1, len(hidden_features)):
+            if activation == 'relu':
+                blocks.append(ReLU())
+            if activation == 'sigmoid':
+                blocks.append(Sigmoid())
+            blocks.append(Linear(curr_in, hidden_features[i]))
+            curr_in = hidden_features[i]
         # ========================
 
         self.sequence = Sequential(*blocks)
