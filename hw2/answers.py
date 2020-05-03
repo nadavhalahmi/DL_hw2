@@ -28,7 +28,7 @@ def part2_optim_hp():
     # ====== YOUR CODE: ======
     wstd = 0.01
     lr_vanilla = 0.05
-    lr_momentum = 0.05
+    lr_momentum = 0.005
     lr_rmsprop = 0.05
     reg = 0.001
     # ========================

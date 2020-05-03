@@ -84,7 +84,7 @@ class Trainer(abc.ABC):
             if best_acc is None or test_res.accuracy > best_acc:
                 best_acc = test_res.accuracy
                 if checkpoints is not None:
-                    torch.save(checkpoints)
+                    torch.save(self.model, checkpoints)
             if early_stopping is not None:
                 new_loss = sum(test_res.losses)/len(test_res.losses)
                 if min_loss is None or new_loss < min_loss:
@@ -210,7 +210,7 @@ class BlocksTrainer(Trainer):
         #  - Calculate number of correct predictions
         # ====== YOUR CODE: ======
         x_scores = self.model.forward(X)
-        loss = self.loss_fn(x_scores, y)
+        loss = self.loss_fn(x_scores, y).item()
         self.optimizer.zero_grad()
         dout = self.loss_fn.backward(dout=1)
         din = self.model.backward(dout)
@@ -229,7 +229,7 @@ class BlocksTrainer(Trainer):
         #  - Calculate number of correct predictions
         # ====== YOUR CODE: ======
         x_scores = self.model.forward(X)
-        loss = self.loss_fn(x_scores, y)
+        loss = self.loss_fn(x_scores, y).item()
         y_hat = x_scores.argmax(dim=1)
         num_correct = int(sum(1 * (y_hat == y)))
         # ========================
