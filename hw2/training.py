@@ -58,6 +58,8 @@ class Trainer(abc.ABC):
         best_acc = None
         epochs_without_improvement = 0
 
+        min_loss = None #TODO: CHECK THIS. SHOULD IT BE BEST_ACC?
+
         for epoch in range(num_epochs):
             verbose = False  # pass this to train/test_epoch.
             if epoch % print_every == 0 or epoch == num_epochs-1:
@@ -73,7 +75,23 @@ class Trainer(abc.ABC):
             #    save the model to the file specified by the checkpoints
             #    argument.
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            train_res = self.train_epoch(dl_train, verbose)
+            train_loss += train_res.losses
+            train_acc += train_res.accuracy
+            test_res = self.test_epoch(dl_test, verbose)
+            test_loss += test_res.losses
+            test_acc += test_res.accuracy
+            if early_stopping is not None:
+                min_new_loss = min(test_res.losses)
+                if min_loss is None or min_new_loss < min_loss:
+                    min_loss = min_new_loss
+                    epochs_without_improvement = 0
+                else:
+                    epochs_without_improvement += 1
+            if best_acc is None or test_res.accuracy > best_acc:
+                best_acc = test_res.accuracy
+                if checkpoints is not None:
+                    torch.save(checkpoints)
             # ========================
 
         return FitResult(actual_num_epochs,
@@ -208,7 +226,10 @@ class BlocksTrainer(Trainer):
         #  - Forward pass
         #  - Calculate number of correct predictions
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        x_scores = self.model.forward(X)
+        loss = self.loss_fn(x_scores, y)
+        y_hat = x_scores.argmax(dim=1)
+        num_correct = int(sum(1 * (y_hat == y)))
         # ========================
 
         return BatchResult(loss, num_correct)
