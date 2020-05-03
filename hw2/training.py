@@ -75,23 +75,25 @@ class Trainer(abc.ABC):
             #    save the model to the file specified by the checkpoints
             #    argument.
             # ====== YOUR CODE: ======
-            train_res = self.train_epoch(dl_train, verbose)
-            train_loss += train_res.losses
-            train_acc += train_res.accuracy
-            test_res = self.test_epoch(dl_test, verbose)
-            test_loss += test_res.losses
-            test_acc += test_res.accuracy
-            if early_stopping is not None:
-                min_new_loss = min(test_res.losses)
-                if min_loss is None or min_new_loss < min_loss:
-                    min_loss = min_new_loss
-                    epochs_without_improvement = 0
-                else:
-                    epochs_without_improvement += 1
+            train_res = self.train_epoch(dl_train, verbose=verbose)
+            train_loss.append(sum(train_res.losses)/len(train_res.losses))
+            train_acc.append(train_res.accuracy)
+            test_res = self.test_epoch(dl_test, verbose=verbose)
+            test_loss.append(sum(test_res.losses)/len(test_res.losses))
+            test_acc.append(test_res.accuracy)
             if best_acc is None or test_res.accuracy > best_acc:
                 best_acc = test_res.accuracy
                 if checkpoints is not None:
                     torch.save(checkpoints)
+            if early_stopping is not None:
+                new_loss = sum(test_res.losses)/len(test_res.losses)
+                if min_loss is None or new_loss < min_loss:
+                    min_loss = new_loss
+                    epochs_without_improvement = 0
+                else:
+                    epochs_without_improvement += 1
+                if epochs_without_improvement >= early_stopping:
+                    break
             # ========================
 
         return FitResult(actual_num_epochs,
