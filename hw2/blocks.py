@@ -307,7 +307,12 @@ class Dropout(Block):
         #  Notice that contrary to previous blocks, this block behaves
         #  differently a according to the current training_mode (train/test).
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        if self.training_mode:
+            toDrop = torch.bernoulli(x, self.p)
+            out = toDrop*x
+            self.grad_cache['toDrop'] = toDrop
+        else:
+            out = x
         # ========================
 
         return out
@@ -315,7 +320,11 @@ class Dropout(Block):
     def backward(self, dout):
         # TODO: Implement the dropout backward pass.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        if self.training_mode:
+            toDrop = self.grad_cache['toDrop']
+            dx = dout*toDrop
+        else:
+            dx = dout
         # ========================
 
         return dx
@@ -431,6 +440,8 @@ class MLP(Block):
         for i in range(1, len(hidden_features)):
             if activation == 'relu':
                 blocks.append(ReLU())
+                if dropout > 0:
+                    blocks.append(Dropout(dropout))
             if activation == 'sigmoid':
                 blocks.append(Sigmoid())
             blocks.append(Linear(curr_in, hidden_features[i]))

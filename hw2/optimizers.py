@@ -142,5 +142,5 @@ class RMSProp(Optimizer):
             # ====== YOUR CODE: ======
             dp += self.reg*p
             self.r[i] = self.decay*self.r[i] + (1-self.decay)*(dp*dp)
-            p -= (self.learn_rate*(torch.sqrt(self.r[i]+self.eps))**(-1))*dp
+            p -= (self.learn_rate*((torch.sqrt(self.r[i]+self.eps))**(-1)))*dp
             # ========================
