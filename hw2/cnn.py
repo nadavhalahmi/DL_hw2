@@ -138,7 +138,24 @@ class ResidualBlock(nn.Module):
         #  - Don't create layers which you don't use. This will prevent
         #    correct comparison in the test.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        layers = []
+        layers.append(nn.Conv2d(in_channels=in_channels, out_channels=channels[0], kernel_size=kernel_sizes[0],
+                                padding=kernel_sizes[0]//2, bias=True))
+        N = len(channels)
+        for i in range(1, N):
+            if dropout > 0:
+                layers.append(nn.Dropout2d(dropout))
+            if batchnorm:
+                layers.append(nn.BatchNorm2d(channels[i-1]))
+            layers.append(nn.ReLU())
+            layers.append(nn.Conv2d(in_channels=channels[i - 1], out_channels=channels[i], kernel_size=kernel_sizes[i],
+                                    padding=kernel_sizes[i]//2, bias=True))
+        self.main_path = nn.Sequential(*layers)
+
+        layers = []
+        if in_channels != channels[-1]:
+            layers.append(nn.Conv2d(in_channels=in_channels, out_channels=channels[-1], kernel_size=1, bias=False))
+        self.shortcut_path = nn.Sequential(*layers)
         # ========================
 
     def forward(self, x):
