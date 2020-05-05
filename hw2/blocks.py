@@ -309,10 +309,10 @@ class Dropout(Block):
         # ====== YOUR CODE: ======
         if self.training_mode:
             toDrop = torch.bernoulli(x, self.p)
-            out = toDrop*(x*(1-self.p))
+            out = toDrop*x
             self.grad_cache['toDrop'] = toDrop
         else:
-            out = x
+            out = x*(1-self.p)
         # ========================
 
         return out
@@ -322,9 +322,9 @@ class Dropout(Block):
         # ====== YOUR CODE: ======
         if self.training_mode:
             toDrop = self.grad_cache['toDrop']
-            dx = dout*(toDrop*(1-self.p))
+            dx = dout*toDrop
         else:
-            dx = dout
+            dx = dout*(1-self.p)
         # ========================
 
         return dx

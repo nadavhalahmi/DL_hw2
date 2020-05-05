@@ -29,7 +29,7 @@ def part2_optim_hp():
     wstd = 0.01
     lr_vanilla = 0.02
     lr_momentum = 0.02
-    lr_rmsprop = 0.001
+    lr_rmsprop = 0.002
     reg = 0.001
     # ========================
     return dict(wstd=wstd, lr_vanilla=lr_vanilla, lr_momentum=lr_momentum,
@@ -41,8 +41,8 @@ def part2_dropout_hp():
     # TODO: Tweak the hyperparameters to get the model to overfit without
     # dropout.
     # ====== YOUR CODE: ======
-    wstd = 0.5
-    lr = 0.001
+    wstd = 0.015
+    lr = 0.03
     # ========================
     return dict(wstd=wstd, lr=lr)
 
