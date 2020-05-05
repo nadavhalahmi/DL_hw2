@@ -127,7 +127,7 @@ class RMSProp(Optimizer):
 
         # TODO: Add your own initializations as needed.
         # ====== YOUR CODE: ======
-        self.r = [0]*len(self.params)
+        self.r = [torch.zeros_like(p) for p, _ in self.params]
         # ========================
 
     def step(self):
@@ -142,5 +142,5 @@ class RMSProp(Optimizer):
             # ====== YOUR CODE: ======
             dp += self.reg*p
             self.r[i] = self.decay*self.r[i] + (1-self.decay)*(dp*dp)
-            p -= (self.learn_rate*((torch.rsqrt(self.r[i]+self.eps))))*dp
+            p -= self.learn_rate * (torch.rsqrt(self.r[i] + self.eps)) * dp
             # ========================

@@ -312,7 +312,7 @@ class Dropout(Block):
             out = toDrop*x
             self.grad_cache['toDrop'] = toDrop
         else:
-            out = x*(1-self.p)
+            out = x
         # ========================
 
         return out
@@ -324,7 +324,7 @@ class Dropout(Block):
             toDrop = self.grad_cache['toDrop']
             dx = dout*toDrop
         else:
-            dx = dout*(1-self.p)
+            dx = dout
         # ========================
 
         return dx
