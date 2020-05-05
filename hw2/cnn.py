@@ -45,22 +45,17 @@ class ConvClassifier(nn.Module):
         #  Note: If N is not divisible by P, then N mod P additional
         #  CONV->ReLUs should exist at the end, without a MaxPool after them.
         # ====== YOUR CODE: ======
+        layers.append(nn.Conv2d(in_channels=in_channels, out_channels=self.channels[0], kernel_size=3, padding=(1,1)))
+        layers.append(nn.ReLU())
         N = len(self.channels)
         P = self.pool_every
-        for j in range(N//P):
-            for i in range(P):
-                index = j*P+i
-                if index == 0:
-                    layers.append(nn.Conv2d(in_channels=in_channels, out_channels=self.channels[index], kernel_size=(3, 3)))
-                else:
-                    layers.append(
-                        nn.Conv2d(in_channels=self.channels[index-1], out_channels=self.channels[index], kernel_size=(3, 3)))
-                layers.append(nn.ReLU())
-            layers.append(nn.MaxPool2d(kernel_size=(2, 2)))
-        for j in range(N % P):
-            index = (N//P)*P+j
-            layers.append(nn.Conv2d(in_channels=self.channels[index-1], out_channels=self.channels[index], kernel_size=(3, 3)))
+        if P == 1:
+            layers.append(nn.MaxPool2d(kernel_size=2))
+        for i in range(1, N):
+            layers.append(nn.Conv2d(in_channels=self.channels[i-1], out_channels=self.channels[i], kernel_size=3,padding=(1,1)))
             layers.append(nn.ReLU())
+            if (i+1) % P == 0:
+                layers.append(nn.MaxPool2d(kernel_size=2))
         # ========================
         seq = nn.Sequential(*layers)
         return seq
@@ -81,7 +76,7 @@ class ConvClassifier(nn.Module):
             in_h = in_h // 2
             in_w = in_w // 2
         M = len(self.hidden_dims)
-        layers.append(nn.Linear(in_features=self.channels[-1]*22*22, out_features=self.hidden_dims[0]))
+        layers.append(nn.Linear(in_features=self.channels[-1]*in_h*in_w, out_features=self.hidden_dims[0]))
         layers.append(nn.ReLU())
         for i in range(M-1):
             layers.append(nn.Linear(in_features=self.hidden_dims[i], out_features=self.hidden_dims[i+1]))
@@ -96,11 +91,9 @@ class ConvClassifier(nn.Module):
         #  Extract features from the input, run the classifier on them and
         #  return class scores.
         # ====== YOUR CODE: ======
-        seq = self._make_feature_extractor()
-        features = seq(x)
+        features = self.feature_extractor(x)
         features = features.view(features.size(0), -1)
-        classifier = self._make_classifier()
-        out = classifier(features)
+        out = self.classifier(features)
         # ========================
         return out
 
