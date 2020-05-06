@@ -186,7 +186,17 @@ class ResNetClassifier(ConvClassifier):
         #    without a MaxPool after them.
         #  - Use your ResidualBlock implemetation.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        N = len(self.channels)
+        P = self.pool_every
+        for i in range(N//P):
+            if i == 0:
+                layers.append(ResidualBlock(in_channels, self.channels[:P], [3]*P))
+            else:
+                layers.append(ResidualBlock(self.channels[i*P-1], self.channels[i*P:min(i*(P+1), N)], [3] * P))
+            layers.append(nn.MaxPool2d(kernel_size=2))
+        if N%P != 0:
+            layers.append(ResidualBlock(self.channels[-N%P-1], self.channels[-(N % P):], [3] * (N % P)))
+
         # ========================
         seq = nn.Sequential(*layers)
         return seq

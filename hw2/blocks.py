@@ -308,7 +308,7 @@ class Dropout(Block):
         #  differently a according to the current training_mode (train/test).
         # ====== YOUR CODE: ======
         if self.training_mode:
-            to_drop = torch.bernoulli(x, self.p)
+            to_drop = torch.bernoulli(x, 1-self.p)
             out = to_drop*x
             self.grad_cache['to_drop'] = to_drop
         else:
@@ -432,20 +432,20 @@ class MLP(Block):
         # TODO: Build the MLP architecture as described.
         # ====== YOUR CODE: ======
         if type(hidden_features) == tuple:
-            hidden_features = hidden_features + (num_classes,)
+            extended_hidden_features = hidden_features + (num_classes,)
         else:
-            hidden_features.append(num_classes)
-        blocks.append(Linear(in_features, hidden_features[0]))
-        curr_in = hidden_features[0]
-        for i in range(1, len(hidden_features)):
+            extended_hidden_features = hidden_features+[num_classes]
+        blocks.append(Linear(in_features, extended_hidden_features[0]))
+        curr_in = extended_hidden_features[0]
+        for i in range(1, len(extended_hidden_features)):
             if activation == 'relu':
                 blocks.append(ReLU())
                 if dropout > 0:
                     blocks.append(Dropout(dropout))
             if activation == 'sigmoid':
                 blocks.append(Sigmoid())
-            blocks.append(Linear(curr_in, hidden_features[i]))
-            curr_in = hidden_features[i]
+            blocks.append(Linear(curr_in, extended_hidden_features[i]))
+            curr_in = extended_hidden_features[i]
         # ========================
 
         self.sequence = Sequential(*blocks)
