@@ -308,11 +308,11 @@ class Dropout(Block):
         #  differently a according to the current training_mode (train/test).
         # ====== YOUR CODE: ======
         if self.training_mode:
-            toDrop = torch.bernoulli(x, self.p)
-            out = toDrop*x
-            self.grad_cache['toDrop'] = toDrop
+            to_drop = torch.bernoulli(x, self.p)
+            out = to_drop*x
+            self.grad_cache['to_drop'] = to_drop
         else:
-            out = x
+            out = x*(1-self.p)
         # ========================
 
         return out
@@ -321,10 +321,10 @@ class Dropout(Block):
         # TODO: Implement the dropout backward pass.
         # ====== YOUR CODE: ======
         if self.training_mode:
-            toDrop = self.grad_cache['toDrop']
-            dx = dout*toDrop
+            to_drop = self.grad_cache['to_drop']
+            dx = dout*to_drop
         else:
-            dx = dout
+            dx = dout*(1-self.p)
         # ========================
 
         return dx

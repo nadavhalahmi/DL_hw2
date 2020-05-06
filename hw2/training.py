@@ -212,8 +212,8 @@ class BlocksTrainer(Trainer):
         x_scores = self.model.forward(X)
         loss = self.loss_fn(x_scores, y).item()
         self.optimizer.zero_grad()
-        dout = self.loss_fn.backward(dout=1)
-        din = self.model.backward(dout)
+        dout = self.loss_fn.backward()
+        self.model.backward(dout)
         self.optimizer.step()
         y_hat = x_scores.argmax(dim=1)
         num_correct = int(sum(1 * (y_hat == y)))
@@ -228,7 +228,7 @@ class BlocksTrainer(Trainer):
         #  - Forward pass
         #  - Calculate number of correct predictions
         # ====== YOUR CODE: ======
-        x_scores = self.model.forward(X)
+        x_scores = self.model(X)
         loss = self.loss_fn(x_scores, y).item()
         y_hat = x_scores.argmax(dim=1)
         num_correct = int(sum(1 * (y_hat == y)))
