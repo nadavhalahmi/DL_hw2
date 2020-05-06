@@ -50,26 +50,35 @@ def part2_dropout_hp():
 part2_q1 = r"""
 **Your answer:**
 
+1. As we expected, we managed to overfit over the data using no-dropout
+since the training set wasn't big. Since we overfitted the data,
+we got low test accuracy for no-dropout.
+Using dropout, we were able to increase the model's generalization
+and therefore get lower training accuracy, but higher test accuracy
+(and better performance).
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+2. As we can see, as the dropout increases, the training accuracy goes lower,
+while the test accuracy goes higher, but only to some point. As we can see in
+the graph, the test accuracy of dropout=0.4 and dropout=0.8 are very similar,
+but if we were going beyond 0.8, we would have gotten worse results on both
+training set and test set, because we would have left with too small model. 
 
 """
 
 part2_q2 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Yes. Cross Entropy Loss depends on other class scores than the true-class score.
+Therefore, increasing other class scores (while maintaining the true-class score
+the highest), will directly increase the loss. 
+At the same time, we can have a different sample, which has two similar scores
+one for the true-class and one for some other class. If they change values,
+the loss will decrease by their diff. If that diff is small, we'll get 
+a bit smaller loss, while getting higher accuracy. Therefore, it is possible that
+the total loss will go higher while we get better results. Moreover,
+even on the same sample it's possible to increase the loss, and at the same time
+improve accuracy for that same sample (when combining the two explanations above - 
+getting the right class while being less decisive over other classes).
 
 """
 # ==============
