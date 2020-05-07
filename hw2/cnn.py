@@ -192,10 +192,10 @@ class ResNetClassifier(ConvClassifier):
             if i == 0:
                 layers.append(ResidualBlock(in_channels, self.channels[:P], [3]*P))
             else:
-                layers.append(ResidualBlock(self.channels[i*P-1], self.channels[i*P:min(i*(P+1), N)], [3] * P))
+                layers.append(ResidualBlock(self.channels[i*P-1], self.channels[i*P:min(i*(P+1), N)], [3]*P))
             layers.append(nn.MaxPool2d(kernel_size=2))
-        if N%P != 0:
-            layers.append(ResidualBlock(self.channels[-N%P-1], self.channels[-(N % P):], [3] * (N % P)))
+        if N % P != 0:
+            layers.append(ResidualBlock(self.channels[-(N % P)-1], self.channels[-(N % P):], [3]*(N % P)))
 
         # ========================
         seq = nn.Sequential(*layers)
