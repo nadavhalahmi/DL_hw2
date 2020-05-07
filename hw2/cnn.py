@@ -222,22 +222,20 @@ class YourCodeNet(ConvClassifier):
         N = len(self.channels)
         P = self.pool_every
 
-        # for simplicity we do the first iteration manually
         layers.append(nn.Conv2d(in_channels, self.channels[0], 3, padding=1))
-        layers.append(nn.ReLU())
         layers.append(nn.Dropout(p=0.2))
+        layers.append(nn.ReLU())
         if P == 1:
             layers.append(nn.MaxPool2d(kernel_size=2, stride=2))
 
-        # now the rest of the iterations
         for i in range(1, N):
             layers.append(nn.Conv2d(self.channels[i - 1], self.channels[i], 3, padding=1))
             if i % 3 == 0:
                 layers.append(nn.BatchNorm2d(self.channels[i]))
-            layers.append(nn.ReLU())
             layers.append(nn.Dropout(p=0.2))
+            layers.append(nn.ReLU())
 
-            if ((i+1) % P) == 0:
+            if (i % P) == 0:
                 layers.append(nn.MaxPool2d(kernel_size=2, stride=2))
 
         seq = nn.Sequential(*layers)
@@ -255,13 +253,13 @@ class YourCodeNet(ConvClassifier):
             in_w = in_w // 2
 
         layers.append(nn.Linear(self.channels[-1] * in_h * in_w, self.hidden_dims[0]))
-        layers.append(nn.ReLU())
         layers.append(nn.Dropout(p=0.5))
+        layers.append(nn.ReLU())
 
         for i in range(len(self.hidden_dims) - 1):
             layers.append(nn.Linear(self.hidden_dims[i], self.hidden_dims[i + 1]))
-            layers.append(nn.ReLU())
             layers.append(nn.Dropout(p=0.5))
+            layers.append(nn.ReLU())
 
         layers.append(nn.Linear(self.hidden_dims[-1], self.out_classes))
 

@@ -87,66 +87,61 @@ getting the right class while being less decisive over other classes).
 # Part 3 answers
 
 part3_q1 = r"""
-**Your answer:**
+*Your answer:*
 
+1. It's easy to see from the graphs that the lower the depth, the better.
+When the depth is too big, there are too many parameters to set, while not having
+enough samples.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+2. The network wasn't trainable for L=8 and L-16. As mentioned above,
+this results from that there are too many parameters to set - the net is too big.
+In order to solve this we can do one of both:
+    - Train on more samples - more samples will allow us to set more parameters, and
+deal with bigger nets.
+    - Learning for long period of time, and multiple start points, will allow us to
+set more and more parameters.
 
 """
 
 part3_q2 = r"""
-**Your answer:**
+*Your answer:*
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+We can see that increasing the number of filters per layer leads to better results
+in contrast to the previous experiment, in which increasing the number of parameters
+in the net, led to worse results. On the other hand, as seen in the previous
+experiment, increasing L leads to worse results.
 
 """
 
 part3_q3 = r"""
-**Your answer:**
+*Your answer:*
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+As seen in previous experiments, increasing L leads to worse results.
+We can also see that when K is big, low values of L like 3 or 4, are also 
+untrainable, while lower values of L like 1 or 2, are highly trainable. 
 
 """
 
 part3_q4 = r"""
-**Your answer:**
+*Your answer:*
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Using skips, we can control the effect of increasing L. So we increase L,
+but at the same time we add skips, to the net can learn where the extensions
+are good and where they are not. This way we can increase L, and kinda gain
+the good things from it, which leads to good results on large networks,
+for example L8_K64-128-256.
 
 """
 
 part3_q5 = r"""
-**Your answer:**
+*Your answer:*
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
+Write your answer using *markdown* and $\LaTeX$:
+python
 # A code block
 a = 2
-```
+
 An equation: $e^{i\pi} -1 = 0$
 
 """
