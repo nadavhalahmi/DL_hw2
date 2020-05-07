@@ -63,7 +63,7 @@ conda activate $CONDA_ENV
 # Run python with the args to the script
 echo $@
 python -m hw2.experiments run-exp --bs-train 128 --bs-test 40 --batches 150 --epochs 50 \
-  -P 2 -H 100 100 100 --lr 0.05 --reg 0.001 $@
+ -H 100 100 100 --lr 0.05 --reg 0.001 $@
 
 echo $@
 echo "*** SLURM BATCH JOB '$job_name' DONE ***"
