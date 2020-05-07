@@ -235,7 +235,7 @@ class YourCodeNet(ConvClassifier):
             layers.append(nn.Dropout(p=0.2))
             layers.append(nn.ReLU())
 
-            if (i % P) == 0:
+            if ((i+1) % P) == 0:
                 layers.append(nn.MaxPool2d(kernel_size=2, stride=2))
 
         seq = nn.Sequential(*layers)
