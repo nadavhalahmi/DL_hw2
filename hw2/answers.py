@@ -136,13 +136,17 @@ for example L8_K64-128-256.
 part3_q5 = r"""
 **Your answer:**
 
+1. In YourCodeNet class we created a network which was supposed to be able to
+train and get good results over the test set. So it's built to deal with overfitting
+and underfitting.
+In order to do so, we created a sequence of Conv, Dropout, ReLU and every few
+times MaxPool/BatchNorm. After that, we used a sequence of Linear, Dropout and ReLu
+(a few times), as a classifier. So it's basically a manipulation of good networks
+from previous experiments, with some layers (like dropout layers) which should
+prevent overfitting.
 
-Write your answer using *markdown* and $\LaTeX$:
-python
-# A code block
-a = 2
-
-An equation: $e^{i\pi} -1 = 0$
+2. We indeed got good test and train results for all values of L in this experiment,
+which exhibits how we merged all those networks into one good network.
 
 """
 # ==============
