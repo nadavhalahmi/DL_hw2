@@ -64,6 +64,10 @@ def run_experiment(run_name, out_dir='./results', seed=None, device=None,
     #   for you automatically.
     fit_res = None
     # ====== YOUR CODE: ======
+
+    print(f'device is {device}')
+    dl_train = DataLoader(torch.utils.data.random_split(ds_train, [20000,len(ds_train)-20000])[0], batch_size=bs_train) #TODO: CHANGE THIS WIRED THING
+    dl_test = DataLoader(torch.utils.data.random_split(ds_test, [6000,len(ds_test)-6000])[0], batch_size=bs_test) #TODO: CHANGE THIS WIRED THING
     total_filters = []
     for filter in filters_per_layer:
         total_filters.extend([filter] * layers_per_block)
@@ -81,6 +85,7 @@ def run_experiment(run_name, out_dir='./results', seed=None, device=None,
     trainer = training.TorchTrainer(loss_fn=loss_fn, model=model, optimizer=optimizer, device=device)
     fit_res = trainer.fit(dl_train, dl_test, num_epochs=epochs, checkpoints=checkpoints, early_stopping=early_stopping,
                           max_batches=batches, **kw)
+
     # ========================
 
     save_experiment(run_name, out_dir, cfg, fit_res)
