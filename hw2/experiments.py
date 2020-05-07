@@ -72,7 +72,7 @@ def run_experiment(run_name, out_dir='./results', seed=None, device=None,
     model = model_cls(ds_train[0][0].shape, len(ds_train.classes),total_filters, pool_every, hidden_dims)
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=lr)
-    trainer = training.TorchTrainer(loss_fn=loss_fn, model=model, optimizer=optimizer)
+    trainer = training.TorchTrainer(loss_fn=loss_fn, model=model, optimizer=optimizer, device=device)
     fit_res = trainer.fit(dl_train, dl_test, num_epochs=epochs, checkpoints=checkpoints, early_stopping=early_stopping, max_batches=batches, **kw)
     # ========================
 
